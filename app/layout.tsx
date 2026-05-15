@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Cormorant_Garamond, Inter } from 'next/font/google';
 import { TRPCProvider } from '@/lib/trpc/client';
 import SmoothScrollProvider from '@/components/providers/SmoothScrollProvider';
+import Navbar  from '@/components/Navbar';
+import Footer  from '@/components/Footer';
 import './globals.css';
 
 const cormorant = Cormorant_Garamond({
@@ -50,6 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <TRPCProvider>
             <SmoothScrollProvider>
+              <Navbar />
               <main
                 style={{
                   position:     'relative',
@@ -66,25 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </TRPCProvider>
         </Providers>
 
-        {/* Footer reveal — positionné fixe derrière le main */}
-        <footer
-          id="site-footer"
-          style={{
-            position: 'fixed',
-            bottom: 0, left: 0, right: 0,
-            height: `${FOOTER_H}px`,
-            background: 'var(--brown-deep)',
-            color: 'var(--cream)',
-            zIndex: 10,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <p style={{ fontFamily: 'var(--font-cormorant)', fontSize: '1.1rem', opacity: 0.6 }}>
-            Best Kech Immo — Marrakech
-          </p>
-        </footer>
+        <Footer />
       </body>
     </html>
   );
