@@ -9,12 +9,21 @@ const VillaObject3D = dynamic(() => import('./3d/VillaObject3D'), { ssr: false }
 gsap.registerPlugin(ScrollTrigger);
 
 const MOCK_PROPERTIES = [
-  { id: '1', name: 'Villa Alya',       type: 'villa',     price: 350, capacity: 8,  bedrooms: 4, area: 350 },
-  { id: '2', name: 'Riad Nour',        type: 'apartment', price: 220, capacity: 6,  bedrooms: 3, area: 180 },
-  { id: '3', name: 'Appartement Menara', type: 'apartment', price: 95, capacity: 4, bedrooms: 2, area: 90  },
-  { id: '4', name: 'Villa Oasis',      type: 'villa',     price: 520, capacity: 10, bedrooms: 5, area: 480 },
-  { id: '5', name: 'Studio Gueliz',    type: 'apartment', price: 65,  capacity: 2,  bedrooms: 1, area: 45  },
-  { id: '6', name: 'Riad Jasmine',     type: 'apartment', price: 180, capacity: 6,  bedrooms: 3, area: 160 },
+  { id: '1',  name: 'Villa Alya',            type: 'villa',     price: 350, capacity: 8,  bedrooms: 4, area: 350 },
+  { id: '2',  name: 'Villa Oasis',           type: 'villa',     price: 520, capacity: 10, bedrooms: 5, area: 480 },
+  { id: '3',  name: 'Riad Nour',             type: 'apartment', price: 220, capacity: 6,  bedrooms: 3, area: 180 },
+  { id: '4',  name: 'Appartement Guéliz',    type: 'apartment', price: 95,  capacity: 4,  bedrooms: 2, area: 90  },
+  { id: '5',  name: 'Studio Palmeraie',      type: 'apartment', price: 65,  capacity: 2,  bedrooms: 1, area: 45  },
+  { id: '6',  name: 'Riad Jasmine',          type: 'apartment', price: 180, capacity: 6,  bedrooms: 3, area: 160 },
+  { id: '7',  name: 'Appart. Hivernage',     type: 'apartment', price: 110, capacity: 4,  bedrooms: 2, area: 85  },
+  { id: '8',  name: 'Appart. Ménara',        type: 'apartment', price: 80,  capacity: 3,  bedrooms: 2, area: 70  },
+  { id: '9',  name: 'Riad Atlas',            type: 'apartment', price: 260, capacity: 8,  bedrooms: 4, area: 210 },
+  { id: '10', name: 'Studio Majorelle',      type: 'apartment', price: 70,  capacity: 2,  bedrooms: 1, area: 42  },
+  { id: '11', name: 'Appart. Agdal',         type: 'apartment', price: 90,  capacity: 4,  bedrooms: 2, area: 80  },
+  { id: '12', name: 'Riad Safi',             type: 'apartment', price: 195, capacity: 6,  bedrooms: 3, area: 155 },
+  { id: '13', name: 'Appart. Targa',         type: 'apartment', price: 75,  capacity: 3,  bedrooms: 2, area: 65  },
+  { id: '14', name: 'Appart. Route Fès',     type: 'apartment', price: 85,  capacity: 4,  bedrooms: 2, area: 75  },
+  { id: '15', name: 'Studio Koutoubia',      type: 'apartment', price: 60,  capacity: 2,  bedrooms: 1, area: 38  },
 ];
 
 export default function SejournSection() {
@@ -70,7 +79,7 @@ export default function SejournSection() {
       {/* Grid */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+        gridTemplateColumns: 'repeat(3, 1fr)',
         gap: '1.5rem',
         maxWidth: 1400,
         margin: '0 auto',

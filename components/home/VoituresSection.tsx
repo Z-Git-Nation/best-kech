@@ -9,10 +9,14 @@ const CarObject3D = dynamic(() => import('./3d/CarObject3D'), { ssr: false });
 gsap.registerPlugin(ScrollTrigger);
 
 const MOCK_VEHICLES = [
-  { id: '1', brand: 'Mercedes',  model: 'GLE',      year: 2023, pricePerDay: 180, seats: 5, transmission: 'automatic' },
-  { id: '2', brand: 'BMW',       model: 'X5',       year: 2022, pricePerDay: 160, seats: 5, transmission: 'automatic' },
-  { id: '3', brand: 'Range Rover', model: 'Sport',  year: 2023, pricePerDay: 220, seats: 5, transmission: 'automatic' },
-  { id: '4', brand: 'Toyota',    model: 'Land Cruiser', year: 2022, pricePerDay: 140, seats: 7, transmission: 'automatic' },
+  { id: '1', brand: 'Dacia',   model: 'Logan',   year: 2024, pricePerDay: 35,  seats: 5, transmission: 'manual'    },
+  { id: '2', brand: 'Dacia',   model: 'Logan',   year: 2024, pricePerDay: 35,  seats: 5, transmission: 'manual'    },
+  { id: '3', brand: 'Dacia',   model: 'Logan',   year: 2025, pricePerDay: 38,  seats: 5, transmission: 'manual'    },
+  { id: '4', brand: 'Renault', model: 'Clio',    year: 2024, pricePerDay: 40,  seats: 5, transmission: 'manual'    },
+  { id: '5', brand: 'Renault', model: 'Clio',    year: 2025, pricePerDay: 42,  seats: 5, transmission: 'manual'    },
+  { id: '6', brand: 'Dacia',   model: 'Duster',  year: 2024, pricePerDay: 55,  seats: 5, transmission: 'manual'    },
+  { id: '7', brand: 'Renault', model: 'Sandero', year: 2024, pricePerDay: 38,  seats: 5, transmission: 'manual'    },
+  { id: '8', brand: 'Peugeot', model: '208',     year: 2024, pricePerDay: 45,  seats: 5, transmission: 'manual'    },
 ];
 
 export default function VoituresSection() {
@@ -61,7 +65,7 @@ export default function VoituresSection() {
       {/* Grid */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+        gridTemplateColumns: 'repeat(4, 1fr)',
         gap: '1.25rem',
         maxWidth: 1400,
         margin: '0 auto',
