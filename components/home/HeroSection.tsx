@@ -102,13 +102,20 @@ export default function HeroSection() {
             ))}
           </div>
 
-          {/* 3D — deux instances toujours montées, position fixe par index */}
+          {/* 3D — deux instances toujours montées, position fixe par index
+               Sortant : démarre immédiatement
+               Entrant : attend 0.38s (≈50% sortie) avant d'entrer */}
           <div style={{ position: 'relative', height: 'clamp(320px, 45vw, 540px)', overflow: 'hidden' }}>
             {FEATURED.map((_, i) => (
               <motion.div
                 key={i}
+                initial={{ opacity: i === 0 ? 1 : 0, x: i === 0 ? 0 : OFFSCREEN[i] }}
                 animate={{ opacity: i === activeIdx ? 1 : 0, x: i === activeIdx ? 0 : OFFSCREEN[i] }}
-                transition={{ duration: 0.85, ease: [0.4, 0, 0.2, 1] }}
+                transition={{
+                  duration: 0.72,
+                  ease: [0.4, 0, 0.2, 1],
+                  delay: i === activeIdx ? 0.38 : 0,
+                }}
                 style={{ position: 'absolute', inset: 0, pointerEvents: i === activeIdx ? 'auto' : 'none' }}
               >
                 <VillaObject3D />
@@ -121,8 +128,9 @@ export default function HeroSection() {
             {FEATURED.map((f, i) => (
               <motion.div
                 key={i}
+                initial={{ opacity: i === 0 ? 1 : 0 }}
                 animate={{ opacity: i === activeIdx ? 1 : 0 }}
-                transition={{ duration: 0.55, ease: 'easeInOut' }}
+                transition={{ duration: 0.45, ease: 'easeInOut', delay: i === activeIdx ? 0.38 : 0 }}
                 style={{
                   position: 'absolute', inset: 0,
                   display: 'flex', flexDirection: 'column', gap: '0.3rem',
@@ -149,8 +157,9 @@ export default function HeroSection() {
             {FEATURED.map((f, i) => (
               <motion.div
                 key={i}
+                initial={{ opacity: i === 0 ? 1 : 0 }}
                 animate={{ opacity: i === activeIdx ? 1 : 0 }}
-                transition={{ duration: 0.55, ease: 'easeInOut', delay: i === activeIdx ? 0.1 : 0 }}
+                transition={{ duration: 0.45, ease: 'easeInOut', delay: i === activeIdx ? 0.42 : 0 }}
                 style={{
                   position: 'absolute', inset: 0, overflow: 'hidden',
                   display: 'flex', gap: '0.75rem', alignItems: 'flex-start',
