@@ -4,7 +4,8 @@ import { useState, useEffect, useRef } from 'react';
 const LINKS = [
   { label: 'Séjour',   href: '#sejour'   },
   { label: 'Voitures', href: '#voitures' },
-  { label: 'Imo.',     href: '#immo'     },
+  { label: 'Immo.',    href: '#immo'     },
+  { label: 'Blog',     href: '#blog'     },
 ];
 
 export default function Navbar() {
