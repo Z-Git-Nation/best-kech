@@ -2,8 +2,9 @@ import type { Metadata } from 'next';
 import { Cormorant_Garamond, Inter } from 'next/font/google';
 import { TRPCProvider } from '@/lib/trpc/client';
 import SmoothScrollProvider from '@/components/providers/SmoothScrollProvider';
-import Navbar  from '@/components/Navbar';
-import Footer  from '@/components/Footer';
+import Navbar        from '@/components/Navbar';
+import Footer        from '@/components/Footer';
+import ChatbotButton from '@/components/ChatbotButton';
 import './globals.css';
 
 const cormorant = Cormorant_Garamond({
@@ -53,6 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <TRPCProvider>
             <SmoothScrollProvider>
               <Navbar />
+              <ChatbotButton />
               <main
                 style={{
                   position:     'relative',
