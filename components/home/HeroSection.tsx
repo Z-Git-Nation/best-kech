@@ -31,11 +31,7 @@ const FEATURED = [
   },
 ];
 
-// Chaque villa a une position FIXE dans l'espace :
-//   index 0 (semaine) → GAUCHE  (-160)
-//   index 1 (mois)    → DROITE  (+160)
-// Quand active : x=0. Quand inactive : x revient à sa position fixe.
-// Aucun AnimatePresence, aucun exitDir, aucune logique de direction.
+// Position fixe par index — hardcodée, jamais calculée depuis un état
 const OFFSCREEN: Record<number, number> = { 0: -160, 1: 160 };
 
 export default function HeroSection() {
@@ -45,12 +41,12 @@ export default function HeroSection() {
   return (
     <section id="hero" style={{ position: 'relative', minHeight: '100svh', overflow: 'hidden' }}>
 
-      {/* Background animé */}
+      {/* Background */}
       <AnimatePresence mode="sync">
         <motion.div
           key={`bg-${activeIdx}`}
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          transition={{ duration: 1.1, ease: 'easeInOut' }}
+          transition={{ duration: 1.4, ease: 'easeInOut' }}
           style={{ position: 'absolute', inset: 0, zIndex: 0, background: active.bg }}
         />
       </AnimatePresence>
@@ -74,47 +70,31 @@ export default function HeroSection() {
         {/* ── LEFT ── */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 
-          {/* ── Toggle pill : layoutId suit exactement la taille du label actif ── */}
+          {/* Toggle pill */}
           <div style={{
             display: 'inline-flex', alignSelf: 'flex-start',
-            background: 'rgba(255,255,255,.08)',
-            borderRadius: '3rem', padding: '3px',
-            border: '1px solid rgba(255,255,255,.1)',
+            background: 'rgba(255,255,255,.08)', borderRadius: '3rem',
+            padding: '3px', border: '1px solid rgba(255,255,255,.1)',
           }}>
             {FEATURED.map((f, i) => (
-              <button
-                key={f.type}
-                onClick={() => setActiveIdx(i)}
-                style={{
-                  position: 'relative',
-                  padding: '0.42rem 1rem',
-                  borderRadius: '3rem',
-                  border: 'none',
-                  background: 'transparent',
-                  cursor: 'pointer',
-                }}
-              >
-                {/* Pill coulissant — suit la taille du bouton actif */}
+              <button key={f.type} onClick={() => setActiveIdx(i)} style={{
+                position: 'relative', padding: '0.42rem 1rem',
+                borderRadius: '3rem', border: 'none', background: 'transparent', cursor: 'pointer',
+              }}>
                 {i === activeIdx && (
                   <motion.div
                     layoutId="hero-pill"
                     transition={{ type: 'spring', bounce: 0.18, duration: 0.4 }}
-                    style={{
-                      position: 'absolute', inset: 0,
-                      background: 'var(--gold)',
-                      borderRadius: '3rem',
-                    }}
+                    style={{ position: 'absolute', inset: 0, background: 'var(--gold)', borderRadius: '3rem' }}
                   />
                 )}
                 <span style={{
                   position: 'relative', zIndex: 1,
                   fontFamily: 'var(--font-inter)', fontSize: '0.72rem',
-                  letterSpacing: '0.1em', textTransform: 'uppercase',
-                  color: i === activeIdx ? 'var(--brown-deep)' : 'rgba(250,247,242,.5)',
+                  letterSpacing: '0.1em', textTransform: 'uppercase', whiteSpace: 'nowrap',
+                  color:      i === activeIdx ? 'var(--brown-deep)' : 'rgba(250,247,242,.5)',
                   fontWeight: i === activeIdx ? 600 : 400,
-                  transition: 'color .25s',
-                  whiteSpace: 'nowrap',
-                  display: 'block',
+                  transition: 'color .25s', display: 'block',
                 }}>
                   Villa {f.label}
                 </span>
@@ -122,74 +102,82 @@ export default function HeroSection() {
             ))}
           </div>
 
-          {/* ── 3D Viewer — les deux toujours montés, position fixe par index ── */}
+          {/* 3D — deux instances toujours montées, position fixe par index */}
           <div style={{ position: 'relative', height: 'clamp(320px, 45vw, 540px)', overflow: 'hidden' }}>
             {FEATURED.map((_, i) => (
               <motion.div
                 key={i}
-                animate={{
-                  opacity: i === activeIdx ? 1    : 0,
-                  x:       i === activeIdx ? 0    : OFFSCREEN[i],
-                }}
-                transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-                style={{
-                  position: 'absolute', inset: 0,
-                  pointerEvents: i === activeIdx ? 'auto' : 'none',
-                }}
+                animate={{ opacity: i === activeIdx ? 1 : 0, x: i === activeIdx ? 0 : OFFSCREEN[i] }}
+                transition={{ duration: 0.85, ease: [0.4, 0, 0.2, 1] }}
+                style={{ position: 'absolute', inset: 0, pointerEvents: i === activeIdx ? 'auto' : 'none' }}
               >
                 <VillaObject3D />
               </motion.div>
             ))}
           </div>
 
-          {/* ── Villa info ── */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`info-${activeIdx}`}
-              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.28 }}
-              style={{ display: 'flex', alignItems: 'baseline', gap: '1rem', flexWrap: 'wrap' }}
-            >
-              <h2 style={{ fontFamily: 'var(--font-cormorant)', fontSize: 'clamp(1.6rem, 3vw, 2.4rem)', fontWeight: 500, color: 'var(--cream)' }}>
-                {active.name}
-              </h2>
-              <span style={{ fontFamily: 'var(--font-inter)', fontSize: '0.9rem', color: 'var(--gold)', fontWeight: 500 }}>
-                à partir de {active.price}/nuit
-              </span>
-              <span style={{ fontFamily: 'var(--font-inter)', fontSize: '0.75rem', color: 'rgba(250,247,242,.5)' }}>
-                · {active.capacity} pers.
-              </span>
-            </motion.div>
-          </AnimatePresence>
-
-          {/* ── Reviews ── */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`rev-${activeIdx}`}
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              transition={{ duration: 0.32, delay: 0.05 }}
-              style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '0.5rem' }}
-            >
-              {active.reviews.map((r, i) => (
-                <div key={i} style={{
-                  flexShrink: 0, background: 'rgba(250,247,242,.08)',
-                  backdropFilter: 'blur(10px)', border: '1px solid rgba(250,247,242,.11)',
-                  borderRadius: 12, padding: '0.85rem 1rem', minWidth: 175, maxWidth: 215,
-                }}>
-                  <p style={{ fontFamily: 'var(--font-inter)', fontSize: '0.77rem', color: 'rgba(250,247,242,.85)', lineHeight: 1.5, marginBottom: '0.6rem' }}>
-                    &ldquo;{r.text}&rdquo;
-                  </p>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontFamily: 'var(--font-inter)', fontSize: '0.7rem', color: 'var(--gold)', fontWeight: 500 }}>{r.author}</span>
-                    <span style={{ color: 'var(--gold)', fontSize: '0.68rem' }}>{'★'.repeat(r.rating)}</span>
-                  </div>
+          {/* Info — hauteur fixe, deux variants absolus → zéro layout shift */}
+          <div style={{ position: 'relative', minHeight: 72 }}>
+            {FEATURED.map((f, i) => (
+              <motion.div
+                key={i}
+                animate={{ opacity: i === activeIdx ? 1 : 0 }}
+                transition={{ duration: 0.55, ease: 'easeInOut' }}
+                style={{
+                  position: 'absolute', inset: 0,
+                  display: 'flex', flexDirection: 'column', gap: '0.3rem',
+                  pointerEvents: i === activeIdx ? 'auto' : 'none',
+                }}
+              >
+                <h2 style={{ fontFamily: 'var(--font-cormorant)', fontSize: 'clamp(1.6rem, 3vw, 2.4rem)', fontWeight: 500, color: 'var(--cream)', lineHeight: 1.15 }}>
+                  {f.name}
+                </h2>
+                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                  <span style={{ fontFamily: 'var(--font-inter)', fontSize: '0.9rem', color: 'var(--gold)', fontWeight: 500 }}>
+                    à partir de {f.price}/nuit
+                  </span>
+                  <span style={{ fontFamily: 'var(--font-inter)', fontSize: '0.75rem', color: 'rgba(250,247,242,.5)' }}>
+                    · {f.capacity} pers.
+                  </span>
                 </div>
-              ))}
-            </motion.div>
-          </AnimatePresence>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Reviews — hauteur fixe, deux variants absolus */}
+          <div style={{ position: 'relative', height: 140 }}>
+            {FEATURED.map((f, i) => (
+              <motion.div
+                key={i}
+                animate={{ opacity: i === activeIdx ? 1 : 0 }}
+                transition={{ duration: 0.55, ease: 'easeInOut', delay: i === activeIdx ? 0.1 : 0 }}
+                style={{
+                  position: 'absolute', inset: 0, overflow: 'hidden',
+                  display: 'flex', gap: '0.75rem', alignItems: 'flex-start',
+                  pointerEvents: i === activeIdx ? 'auto' : 'none',
+                }}
+              >
+                {f.reviews.map((r, ri) => (
+                  <div key={ri} style={{
+                    flexShrink: 0, background: 'rgba(250,247,242,.08)',
+                    backdropFilter: 'blur(10px)', border: '1px solid rgba(250,247,242,.11)',
+                    borderRadius: 12, padding: '0.85rem 1rem', width: 'calc(33% - 0.5rem)',
+                  }}>
+                    <p style={{ fontFamily: 'var(--font-inter)', fontSize: '0.77rem', color: 'rgba(250,247,242,.85)', lineHeight: 1.5, marginBottom: '0.6rem' }}>
+                      &ldquo;{r.text}&rdquo;
+                    </p>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontFamily: 'var(--font-inter)', fontSize: '0.7rem', color: 'var(--gold)', fontWeight: 500 }}>{r.author}</span>
+                      <span style={{ color: 'var(--gold)', fontSize: '0.68rem' }}>{'★'.repeat(r.rating)}</span>
+                    </div>
+                  </div>
+                ))}
+              </motion.div>
+            ))}
+          </div>
         </div>
 
-        {/* ── RIGHT — Frosted glass form ── */}
+        {/* RIGHT — Frosted glass form */}
         <div style={{
           background: 'rgba(250,247,242,.10)', borderRadius: 20,
           backdropFilter: 'blur(24px) saturate(1.5)', WebkitBackdropFilter: 'blur(24px) saturate(1.5)',
