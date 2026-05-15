@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+/* ── Palette Best Kech Immo ── */
+:root {
+  --terracotta:       #C4714A;
+  --terracotta-deep:  #9E5535;
+  --terracotta-light: #D9987A;
+  --cream:            #FAF7F2;
+  --cream-warm:       #F2EBE0;
+  --brown-deep:       #2C1810;
+  --brown-mid:        #5C3828;
+  --gold:             #D4A853;
+  --gold-light:       #E8C87A;
+  --white:            #FFFFFF;
+  --text-dark:        #2C1810;
+  --text-mid:         #7A4A35;
+  --text-light:       #B8896A;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  background: var(--brown-deep);
+}
+
+body {
+  font-family: var(--font-inter), 'Inter', system-ui, sans-serif;
+  color: var(--text-dark);
+  background: var(--cream);
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
+}
+
+::selection {
+  background: var(--terracotta);
+  color: var(--cream);
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: var(--cream-warm); }
+::-webkit-scrollbar-thumb { background: var(--terracotta); border-radius: 3px; }

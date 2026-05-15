@@ -40,14 +40,15 @@ Hermes Agent (Hetzner existant — démo Telegram)
 |--------|-------|
 | Framework | Next.js 14 App Router |
 | 3D | React Three Fiber + @react-three/drei |
-| Animations | Framer Motion + CSS Scroll-Driven Animations API |
-| UI | Tailwind CSS + shadcn/ui |
+| Animations | Motion + GSAP + Lenis (smooth scroll) + CSS Scroll-Driven |
+| UI | Tailwind v4 + Radix UI primitives + CVA + tailwind-merge |
 | Auth | Clerk (3 comptes : Rachid · Sabri · Mohamed) |
 | DB | PostgreSQL self-hosted Hetzner |
-| ORM | Prisma |
+| ORM | Drizzle ORM + postgres driver (cohérent workspace) |
 | Storage | Hetzner (MinIO ou dossier /uploads) |
 | Deploy | Vercel (app Next.js) + Hetzner (DB + storage + Hermes) |
 | Domaine | bestkech.ai-nation.xyz |
+| Port dev | 3035 (3030 = Song Signature) |
 
 ---
 
