@@ -15,9 +15,9 @@ const FEATURED = [
     type: 'week' as const, label: 'de la semaine',
     name: 'Villa Alya', price: '350€', capacity: 8, bg: BG_GRADIENTS[0],
     reviews: [
-      { author: 'Sophie M.',  text: 'Un séjour absolument magique, la villa est sublime.', rating: 5 },
-      { author: 'Thomas R.',  text: 'Piscine incroyable, service impeccable. On revient !', rating: 5 },
-      { author: 'Léa B.',     text: 'Marrakech sous son meilleur jour. Coup de cœur.', rating: 5 },
+      { author: 'Sophie M.', text: 'Un séjour absolument magique, la villa est sublime.', rating: 5 },
+      { author: 'Thomas R.', text: 'Piscine incroyable, service impeccable. On revient !', rating: 5 },
+      { author: 'Léa B.',    text: 'Marrakech sous son meilleur jour. Coup de cœur.',      rating: 5 },
     ],
   },
   {
@@ -25,34 +25,21 @@ const FEATURED = [
     name: 'Riad Nour', price: '220€', capacity: 6, bg: BG_GRADIENTS[1],
     reviews: [
       { author: 'Marc D.',   text: 'Authentique et luxueux, parfait pour notre anniversaire.', rating: 5 },
-      { author: 'Amina K.',  text: 'Le riad de mes rêves. Service 5 étoiles.', rating: 5 },
-      { author: 'Pierre L.', text: 'Expérience inoubliable au cœur de Marrakech.', rating: 5 },
+      { author: 'Amina K.',  text: 'Le riad de mes rêves. Service 5 étoiles.',                 rating: 5 },
+      { author: 'Pierre L.', text: 'Expérience inoubliable au cœur de Marrakech.',             rating: 5 },
     ],
   },
 ];
 
-// Règle fixe (indépendante de la direction de navigation) :
-//   index 0 (semaine) → toujours à GAUCHE  (x = -120)
-//   index 1 (mois)    → toujours à DROITE  (x = +120)
-const POS = [-120, 120] as const;
+// Chaque villa a une position FIXE dans l'espace :
+//   index 0 (semaine) → GAUCHE  (-160)
+//   index 1 (mois)    → DROITE  (+160)
+// Quand active : x=0. Quand inactive : x revient à sa position fixe.
+// Aucun AnimatePresence, aucun exitDir, aucune logique de direction.
+const OFFSCREEN: Record<number, number> = { 0: -160, 1: 160 };
 
 export default function HeroSection() {
-  // activeIdx = élément VISIBLE en ce moment
-  // exitDir   = direction de l'élément qui VIENT DE PARTIR
-  //             mis à jour en MÊME BATCH que activeIdx → pas de désync
   const [activeIdx, setActiveIdx] = useState(0);
-  const [exitDir,   setExitDir]   = useState<-120 | 120>(-120);
-
-  const go = (newIdx: number) => {
-    if (newIdx === activeIdx) return;
-    // L'élément courant (activeIdx) va partir : sa direction de sortie = sa position fixe
-    setExitDir(POS[activeIdx]);
-    setActiveIdx(newIdx);
-  };
-
-  // L'élément entrant vient de sa propre position fixe
-  const enterX = POS[activeIdx];
-
   const active = FEATURED[activeIdx];
 
   return (
@@ -87,75 +74,80 @@ export default function HeroSection() {
         {/* ── LEFT ── */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 
-          {/* ── Toggle pill ── */}
+          {/* ── Toggle pill : layoutId suit exactement la taille du label actif ── */}
           <div style={{
-            display: 'inline-flex', position: 'relative',
+            display: 'inline-flex', alignSelf: 'flex-start',
             background: 'rgba(255,255,255,.08)',
-            borderRadius: '3rem',
-            padding: '4px',
+            borderRadius: '3rem', padding: '3px',
             border: '1px solid rgba(255,255,255,.1)',
-            alignSelf: 'flex-start',
           }}>
-            {/* Indicateur coulissant */}
-            <motion.div
-              layoutId="toggle-pill"
-              layout
-              transition={{ type: 'spring', bounce: 0.18, duration: 0.45 }}
-              style={{
-                position: 'absolute',
-                top: 4, bottom: 4,
-                left: activeIdx === 0 ? 4 : '50%',
-                right: activeIdx === 1 ? 4 : '50%',
-                background: 'var(--gold)',
-                borderRadius: '3rem',
-                zIndex: 0,
-              }}
-            />
             {FEATURED.map((f, i) => (
               <button
                 key={f.type}
-                onClick={() => go(i)}
+                onClick={() => setActiveIdx(i)}
                 style={{
+                  position: 'relative',
+                  padding: '0.42rem 1rem',
+                  borderRadius: '3rem',
+                  border: 'none',
+                  background: 'transparent',
+                  cursor: 'pointer',
+                }}
+              >
+                {/* Pill coulissant — suit la taille du bouton actif */}
+                {i === activeIdx && (
+                  <motion.div
+                    layoutId="hero-pill"
+                    transition={{ type: 'spring', bounce: 0.18, duration: 0.4 }}
+                    style={{
+                      position: 'absolute', inset: 0,
+                      background: 'var(--gold)',
+                      borderRadius: '3rem',
+                    }}
+                  />
+                )}
+                <span style={{
                   position: 'relative', zIndex: 1,
                   fontFamily: 'var(--font-inter)', fontSize: '0.72rem',
                   letterSpacing: '0.1em', textTransform: 'uppercase',
-                  padding: '0.4rem 1rem', borderRadius: '3rem',
-                  border: 'none', cursor: 'pointer', background: 'transparent',
-                  color: i === activeIdx ? 'var(--brown-deep)' : 'rgba(250,247,242,.55)',
+                  color: i === activeIdx ? 'var(--brown-deep)' : 'rgba(250,247,242,.5)',
                   fontWeight: i === activeIdx ? 600 : 400,
                   transition: 'color .25s',
                   whiteSpace: 'nowrap',
-                }}
-              >
-                Villa {f.label}
+                  display: 'block',
+                }}>
+                  Villa {f.label}
+                </span>
               </button>
             ))}
           </div>
 
-          {/* ── 3D Viewer ── */}
-          <div style={{ position: 'relative', height: 'clamp(320px, 45vw, 540px)' }}>
-            <AnimatePresence mode="wait">
+          {/* ── 3D Viewer — les deux toujours montés, position fixe par index ── */}
+          <div style={{ position: 'relative', height: 'clamp(320px, 45vw, 540px)', overflow: 'hidden' }}>
+            {FEATURED.map((_, i) => (
               <motion.div
-                key={activeIdx}
-                initial={{ opacity: 0, x: enterX }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{    opacity: 0, x: exitDir  }}
-                transition={{ duration: 0.52, ease: [0.4, 0, 0.2, 1] }}
-                style={{ position: 'absolute', inset: 0 }}
+                key={i}
+                animate={{
+                  opacity: i === activeIdx ? 1    : 0,
+                  x:       i === activeIdx ? 0    : OFFSCREEN[i],
+                }}
+                transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+                style={{
+                  position: 'absolute', inset: 0,
+                  pointerEvents: i === activeIdx ? 'auto' : 'none',
+                }}
               >
                 <VillaObject3D />
               </motion.div>
-            </AnimatePresence>
+            ))}
           </div>
 
           {/* ── Villa info ── */}
           <AnimatePresence mode="wait">
             <motion.div
               key={`info-${activeIdx}`}
-              initial={{ opacity: 0, x: enterX * 0.5 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{    opacity: 0, x: exitDir * 0.5 }}
-              transition={{ duration: 0.35 }}
+              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.28 }}
               style={{ display: 'flex', alignItems: 'baseline', gap: '1rem', flexWrap: 'wrap' }}
             >
               <h2 style={{ fontFamily: 'var(--font-cormorant)', fontSize: 'clamp(1.6rem, 3vw, 2.4rem)', fontWeight: 500, color: 'var(--cream)' }}>
@@ -174,10 +166,8 @@ export default function HeroSection() {
           <AnimatePresence mode="wait">
             <motion.div
               key={`rev-${activeIdx}`}
-              initial={{ opacity: 0, x: enterX * 0.35 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{    opacity: 0, x: exitDir * 0.35 }}
-              transition={{ duration: 0.42, delay: 0.06 }}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              transition={{ duration: 0.32, delay: 0.05 }}
               style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '0.5rem' }}
             >
               {active.reviews.map((r, i) => (
